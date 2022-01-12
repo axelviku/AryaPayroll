@@ -6,21 +6,20 @@ const jwt = require("jsonwebtoken");
 const cookieParsar = require("cookie-parser");
 const session = require('express-session');
 const Token = require('./token');
+const MetaData = require('../models/meta-data');
 const Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 
 
 const studentSchema = new mongoose.Schema({
-    parentUserId:{type: ObjectId},
+    parentUserId: ObjectId,
     registrationToken: Token.schema,
-    // username: {
-    //     type: String,
-    //     // required: true,
-    //     // minlength: [3, "Length shoulds be greater than 3 char"],
-    //     // maxlength: [30, "Inviled"],
-    //     // lowercase: true,
-    //     // trim:true
-    // },
+    metaData: MetaData.schema,
+    isActive: {
+        type: Boolean,
+        default: true
+      },
+      lastLogin : Date,
     email: {
         type: String,
         // required: true,

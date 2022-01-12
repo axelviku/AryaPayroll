@@ -37,7 +37,7 @@ const register = async (req, res) => {
           createSt.registrationToken.token
           )}?on=register`;
           
-        (main(st1.email, "link", newRegistrationUrl));
+        (main(st1.email, "Registration Link", newRegistrationUrl));
         
         // var session = req.session;
         // session.tokens= createSt.tokens[0].token;

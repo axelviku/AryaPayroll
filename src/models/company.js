@@ -10,9 +10,8 @@ const MetaData = require("../models/meta-data");
 
 
 
-const companySchema = new Schema({
-
-    userId:{type:ObjectId}, //Parent User Id
+const companySchema = new mongoose.Schema({
+    userId: ObjectId, //Parent User Id
     metaData:MetaData.schema,
     name: {
         type: String,
@@ -50,6 +49,7 @@ const companySchema = new Schema({
         type: String,
         // required:[true,'Official Number is neccesary'],
     },
+  
     logoUrl: {
         type: String
     },
@@ -135,7 +135,7 @@ email = (data.email.toLowerCase());
             //     let results = await mongoose.connection.collection("countries_info").find({"country_name":data.countryName}).toArray();
             //     newCompany.countryName = results[results.length-1];
             // }
-
+        
             newCompany.userId = data.parentUserId;
             newCompany.name = data.name;
             newCompany.status = data.status;
@@ -144,6 +144,7 @@ email = (data.email.toLowerCase());
             newCompany.fax = data.fax;
             newCompany.countryName=data.countryName;
             newCompany.email = data.email;
+            newCompany.domicile=data.domicile;
             newCompany.outGoingMails = data.outGoingMails;
             newCompany.officialNumber = data.officialNumber;
             newCompany.logoUrl = data.logoUrl;

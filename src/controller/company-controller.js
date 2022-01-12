@@ -1,12 +1,12 @@
 
 const Company = require("../models/company");
-const ObjectID = require("mongodb").ObjectID;
+const ObjectID = require("mongodb").ObjectId;
 const { success, error } = require("./mesage");
 const MetaData = require("../models/meta-data");
 // const commonFunction = require("../commonFunctions");
 // const Holiday = require("../models/holiday");
 // const Leave = require("../models/leave");
-const User = require("../models/user");
+const Student = require("../models/user");
 // const JobProfile = require("../models/job-profile");
 // const Department = require("../models/department");
 // const _ = require("underscore");
@@ -39,7 +39,7 @@ module.exports.addCompany = async function (req, res) {
         var companyData = {};
         companyData = req.body;
         console.log(companyData);
-        // companyData.parentUserId = req.params.parentUserId;
+        companyData.parentUserId = req.params.parentUserId;
         // console.log("fghjdf");
         // req.params.subUserId ? (companyData.subUserId = req.params.subUserId) : "";
         // console.log("fdgjk");
@@ -64,23 +64,73 @@ module.exports.addCompany = async function (req, res) {
     }
 };
 
-
 // List all the companies under both parent user as well as subuser
-// module.exports.listAllCompanies = async function (req, res) {
-//     try {
-//         let userDetails = await User.findById({ _id: ObjectID(req.params.parentUserId) });
-//         if (userDetails.parentUserId) {
-//             var companyList = await Company.find({ userId: userDetails.parentUserId });
-//         } else {
-//             var companyList = await Company.find({ userId: req.params.parentUserId });
-//         }
-
-//         res.send({
-//             status: "success",
-//             message: "Company List Success",
-//             company: companyList
-//         });
-//     } catch (err) {
-//         res.send({ status: "error", message: err.message });
-//     }
-// };
+module.exports.listAllCompanies = async function (req, res) {
+    try {
+        let userDetails = await Student.findById({ _id: ObjectID(req.params.parentUserId) });
+        if (userDetails.parentUserId) {
+            var companyList = await Company.find({ userId: userDetails.parentUserId });
+        } else {
+            var companyList = await Company.find({ userId: req.params.parentUserId });
+        }
+        res.send({
+            status: "success",
+            message: "Company List Success",
+            company: companyList
+        });
+    } catch (err) {
+        res.send({ status: "error", message: err.message });
+    }
+};
+// List Individual Company List
+module.exports.companyDetails = async function(req, res) {
+    try {
+        console.log("company");
+      var returnCompanyData = {};
+      var defaultLogo = `http://${req.headers.host}/assets/images/aryavrat-infotech-squarelogo-1533534321648.png`;
+      console.log("company1");
+      var companyDetails = await Company.findById({
+        _id: ObjectID(req.params.companyId)
+      });
+      console.log("company2");
+    //     if (companyDetails.countryName) {
+    //   var results = await mongoose.connection
+    //   .collection("countries_info")
+    //   .find({ _id: ObjectID(companyDetails.countryInfoId) })
+    //   .toArray();
+    //     // returnCompanyData.countryName = results[results.length - 1].country_name;
+    //     // returnCompanyData.currency = results[results.length - 1].currency_code;
+    //   }
+      console.log("company4");
+      
+      returnCompanyData.name = companyDetails.name;
+      returnCompanyData.address = companyDetails.address;
+      returnCompanyData.domicile = companyDetails.domicile;
+      returnCompanyData.officialNumber = companyDetails.officialNumber;
+      returnCompanyData.fax = companyDetails.fax;
+      returnCompanyData.email = companyDetails.email;
+      returnCompanyData.countryName= companyDetails.countryName;
+      returnCompanyData.taxationNumber =companyDetails.payrollSetting.taxationNumber;
+      returnCompanyData.panNumber = companyDetails.payrollSetting.panNumber;
+      returnCompanyData._id = companyDetails._id;
+      returnCompanyData.bankName = companyDetails.bankDetails.bankName;
+      returnCompanyData.bankAccNum = companyDetails.bankDetails.bankAccNum;
+      returnCompanyData.bankType = companyDetails.bankDetails.bankType;
+      
+      console.log("company5");
+    //   if(companyDetails.logoUrl === defaultLogo){
+    //     returnCompanyData.logoUrl = companyDetails.logoUrl;
+    //   } else {
+    //     let alterFilePath = companyDetails.logoUrl.substr(companyDetails.logoUrl.indexOf('public')+6);
+    //     returnCompanyData.logoUrl = `http://${req.headers.host}${alterFilePath}`
+    //   }
+  
+      return res.send({
+        status: "success",
+        message: "Individual company list success",
+        data: returnCompanyData
+      });
+    } catch (err) {
+      return res.send(error( "hiiii"));
+    }
+  };
